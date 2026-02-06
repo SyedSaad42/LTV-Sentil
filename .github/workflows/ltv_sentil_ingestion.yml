@@ -1,13 +1,10 @@
 name: LTV Sentinel Daily Ingest
 
 on:
-  schedule:
-    # This runs the script every day at 5:00 AM UTC
-    - cron: '0 5 * * *' 
-  workflow_dispatch: # This button lets you run it manually for testing
+  workflow_dispatch: # Allows you to click the button to test
 
 jobs:
-  ingest_and_commit:
+  ingest_to_bigquery:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -20,21 +17,13 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install pandas google-cloud-bigquery pandas-gbq
+          pip install pandas google-cloud-bigquery pandas-gbq pyarrow
 
       - name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-      - name: Run Ingestion
+      - name: Run BigQuery Ingestion
+        # Matches your file name in the root directory exactly
         run: python ingest_raw_script.py
-
-
-      - name: Commit and Push Bronze Data
-        run: |
-          git config --global user.name "LTV-Sentinel-Bot"
-          git config --global user.email "actions@github.com"
-          git add ingestion/*.csv
-          git commit -m "Sentinel Auto-Ingest: $(date +'%Y-%m-%d')" || echo "No new data to commit"
-          git push
