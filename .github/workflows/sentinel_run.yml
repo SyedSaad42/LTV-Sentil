@@ -21,14 +21,15 @@ jobs:
 
       - name: Create Key File
         run: |
-          # Step into the first LTV-Sentil and make the key folder
-          mkdir -p LTV-Sentil/key
-          echo "${{ secrets.GCP_SA_KEY }}" > LTV-Sentil/key/service_account.json
+          # GitHub already checked out the repo, so we're inside LTV-Sentil
+          # Just create the key folder directly
+          mkdir -p key
+          echo "${{ secrets.GCP_SA_KEY }}" > key/service_account.json
 
       - name: Run dbt
-        # This is the fix: GitHub already starts inside 'LTV-Sentil' (the repo).
-        # We only need to go into the SUB-FOLDER 'ltv_sentinel_dbt'.
-        working-directory: LTV-Sentil/ltv_sentinel_dbt
+        # We're already in the repo root (LTV-Sentil)
+        # Just navigate to the ltv_sentinel_dbt subfolder
+        working-directory: ltv_sentinel_dbt
         env:
           DBT_GOOGLE_KEYFILE: ../key/service_account.json
         run: |
