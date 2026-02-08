@@ -21,15 +21,14 @@ jobs:
 
       - name: Create Key File
         run: |
-          # We create the key folder at the SAME level as ltv_sentinel_dbt
+          # Create the key folder at the level GitHub actually sees
           mkdir -p LTV-Sentil/key
           echo "${{ secrets.GCP_SA_KEY }}" > LTV-Sentil/key/service_account.json
 
       - name: Run dbt
-        # This points to the folder that actually contains dbt_project.yml
+        # FIXED: Removed the extra 'LTV-Sentil/' that was causing the 404
         working-directory: LTV-Sentil/ltv_sentinel_dbt
         env:
-          # We tell dbt to look "up" one level for the key folder we just created
           DBT_GOOGLE_KEYFILE: ../key/service_account.json
         run: |
           dbt run --profiles-dir .
