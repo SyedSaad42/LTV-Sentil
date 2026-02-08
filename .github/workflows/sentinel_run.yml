@@ -1,3 +1,33 @@
-pip install dbt-bigquery
-dbt run --profiles-dir .
-dbt test --profiles-dir .
+name: dbt_sentinel_run
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Allows you to run it manually
+
+jobs:
+  run_dbt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install dbt-bigquery
+
+      - name: Authenticate with GCP
+        run: |
+          mkdir -p key
+          echo "${{ secrets.GCP_SA_KEY }}" > key/service_account.json
+
+      - name: Run dbt
+        env:
+          DBT_GOOGLE_KEYFILE: key/service_account.json
+        run: |
+          dbt run --profiles-dir .
+          dbt test --profiles-dir .
