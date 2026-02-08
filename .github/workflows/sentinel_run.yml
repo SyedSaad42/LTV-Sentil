@@ -3,7 +3,7 @@ name: dbt_sentinel_run
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # Allows you to run it manually
+  workflow_dispatch: 
 
 jobs:
   run_dbt:
@@ -17,15 +17,17 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        run: |
-          pip install dbt-bigquery
+        run: pip install dbt-bigquery
 
-      - name: Authenticate with GCP
+      - name: Create Key File
         run: |
-          mkdir -p key
-          echo "${{ secrets.GCP_SA_KEY }}" > key/service_account.json
+          # Create the key inside the actual dbt folder so profiles.yml can see it
+          mkdir -p LTV-Sentil/ltv_sentinel_dbt/key
+          echo "${{ secrets.GCP_SA_KEY }}" > LTV-Sentil/ltv_sentinel_dbt/key/service_account.json
 
       - name: Run dbt
+        # We set the working directory so dbt starts exactly where dbt_project.yml lives
+        working-directory: LTV-Sentil/ltv_sentinel_dbt
         env:
           DBT_GOOGLE_KEYFILE: key/service_account.json
         run: |
