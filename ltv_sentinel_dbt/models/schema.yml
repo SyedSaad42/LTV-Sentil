@@ -1,0 +1,28 @@
+version: 2
+
+models: # here we list our SQL Files
+  - name: stg_subscriptions
+    description: "Cleaned subscription data from Stripe"
+    columns:
+      - name: sub_id
+        description: "The primary key for this model"
+        tests:
+          - unique
+          - not_null
+
+      - name: status
+        description: "The current state of the subscription"
+        tests:
+          - accepted_values:
+              values: ['active', 'canceled','past_due']
+
+  - name: marts_subscription_metrics
+    description: "Final LTV metrics per subscription"
+    columns:
+      - name: sub_id
+        tests:
+          - unique
+          - not_null
+      - name: monthly_revenue_usd
+        tests:
+          - not_null

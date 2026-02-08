@@ -27,3 +27,10 @@ jobs:
       - name: Run BigQuery Ingestion
         # Matches your file name in the root directory exactly
         run: python ingest_raw_script.py
+
+
+      - name: Run dbt models
+        run: dbt run
+
+      - name: Test dbt models
+        run: dbt test

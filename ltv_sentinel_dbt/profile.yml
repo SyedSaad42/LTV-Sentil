@@ -1,0 +1,14 @@
+ltv_sentinel_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      # This points to the JSON key file you downloaded from Google Cloud
+      keyfile: "{{ env_var('DBT_GOOGLE_KEYFILE', 'C:\\Users\\saads\\LTV-Sentil\\LTV-Sentil\\key\\ltv-sentinel-project-e26e947bdd6e.json') }}"
+      project: ltv-sentinel-project
+      dataset: ltv_sentinel_silver
+      threads: 1
+      timeout_seconds: 300
+      location: US # or your specific region (e.g., europe-west3)
+      priority: interactive

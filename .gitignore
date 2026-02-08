@@ -1,0 +1,19 @@
+dbt_env_final/
+env/
+venv/
+bin/
+obj/
+key/
+
+# dbt specific files
+target/
+dbt_packages/
+logs/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Credentials (NEVER commit these)
+profiles.yml
+.env

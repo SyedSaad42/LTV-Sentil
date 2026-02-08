@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: stripe_source
+    database: ltv-sentinel-project
+    schema: ltv_sentinel_bronze
+    tables:
+      - name: stripe_raw_subs
