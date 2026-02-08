@@ -23,11 +23,11 @@ jobs:
         run: |
           # Create the key inside the actual dbt folder so profiles.yml can see it
           mkdir -p LTV-Sentil/ltv_sentinel_dbt/key
-          echo "${{ secrets.GCP_SA_KEY }}" > /ltv_sentinel_dbt/key/service_account.json
+          echo "${{ secrets.GCP_SA_KEY }}" > LTV-Sentil/ltv_sentinel_dbt/key/service_account.json
 
       - name: Run dbt
         # We set the working directory so dbt starts exactly where dbt_project.yml lives
-        working-directory: LTV-Sentil/ltv_sentinel_dbt
+        working-directory: /ltv_sentinel_dbt
         env:
           DBT_GOOGLE_KEYFILE: key/service_account.json
         run: |
