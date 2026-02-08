@@ -21,12 +21,13 @@ jobs:
 
       - name: Create Key File
         run: |
-          # Create the key folder at the level GitHub actually sees
+          # Step into the first LTV-Sentil and make the key folder
           mkdir -p LTV-Sentil/key
           echo "${{ secrets.GCP_SA_KEY }}" > LTV-Sentil/key/service_account.json
 
       - name: Run dbt
-        # FIXED: Removed the extra 'LTV-Sentil/' that was causing the 404
+        # This is the fix: GitHub already starts inside 'LTV-Sentil' (the repo).
+        # We only need to go into the SUB-FOLDER 'ltv_sentinel_dbt'.
         working-directory: LTV-Sentil/ltv_sentinel_dbt
         env:
           DBT_GOOGLE_KEYFILE: ../key/service_account.json
