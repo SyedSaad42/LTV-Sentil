@@ -3,22 +3,14 @@ name: dbt_sentinel_run
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   run_dbt:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-
-      - name: Debug - List directory contents
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Contents of current directory:"
-          ls -la
-          echo "Looking for dbt folder:"
-          find . -name "*sentinel*" -o -name "*dbt*"
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -28,15 +20,35 @@ jobs:
       - name: Install dependencies
         run: pip install dbt-bigquery
 
-      - name: Create Key File
+      - name: Create GCP service account key file
         run: |
           mkdir -p key
           echo "${{ secrets.GCP_SA_KEY }}" > key/service_account.json
 
+      - name: Create dbt profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat <<EOF > ~/.dbt/profiles.yml
+          ltv_sentinel_dbt:
+            target: dev
+            outputs:
+              dev:
+                type: bigquery
+                method: service-account
+                keyfile: /home/runner/work/${{ github.repository }}/key/service_account.json
+                project: ltv-sentinel-project
+                dataset: ltv_sentinel_silver
+                threads: 1
+                timeout_seconds: 300
+                location: US
+                priority: interactive
+          EOF
+
+      - name: Debug dbt setup
+        run: dbt debug
+
       - name: Run dbt
         working-directory: ltv_sentinel_dbt
-        env:
-          DBT_GOOGLE_KEYFILE: ../key/service_account.json
         run: |
-          dbt run --profiles-dir .
-          dbt test --profiles-dir .
+          dbt run
+          dbt test
