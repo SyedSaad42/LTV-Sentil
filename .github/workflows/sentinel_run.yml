@@ -15,11 +15,15 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
+      - name: Create GCP Key File (for Python)
+        run: |
+          mkdir -p ${{ github.workspace }}/key
+          echo '${{ secrets.GCP_SA_KEY }}' > ${{ github.workspace }}/key/service_account.json
       
       - name: Run Ingestion Script
         working-directory: ${{ github.workspace }}  
         env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GCP_SA_KEY: ${{ github.workspace }}/key/service_account.json
         run: |
           pip install pandas google-cloud-bigquery stripe
           python ${{ github.workspace }}/ingest_raw_script.py
