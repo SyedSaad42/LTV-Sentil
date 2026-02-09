@@ -29,7 +29,7 @@ jobs:
       - name: Run dbt
         # We're already in the repo root (LTV-Sentil)
         # Just navigate to the ltv_sentinel_dbt subfolder
-        working-directory: ltv_sentinel_dbt
+        working-directory: /ltv_sentinel_dbt
         env:
           DBT_GOOGLE_KEYFILE: ../key/service_account.json
         run: |
