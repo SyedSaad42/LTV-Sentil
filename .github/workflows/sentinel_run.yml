@@ -17,11 +17,12 @@ jobs:
           python-version: '3.9'
       
       - name: Run Ingestion Script
+        working-directory: ${{ github.workspace }}  
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
           pip install pandas google-cloud-bigquery stripe
-          python ${{ github.workspace }}/LTV-Sentil/ingest_raw_script.py
+          python ${{ github.workspace }}/ingest_raw_script.py
          
   # JOB 2: Transform the data (only runs if ingest_data succeeds)
   run_dbt:
