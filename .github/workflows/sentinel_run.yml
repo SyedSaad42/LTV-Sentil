@@ -11,6 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Debug - List directory contents
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Contents of current directory:"
+          ls -la
+          echo "Looking for dbt folder:"
+          find . -name "*sentinel*" -o -name "*dbt*"
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -21,15 +30,11 @@ jobs:
 
       - name: Create Key File
         run: |
-          # GitHub already checked out the repo, so we're inside LTV-Sentil
-          # Just create the key folder directly
           mkdir -p key
           echo "${{ secrets.GCP_SA_KEY }}" > key/service_account.json
 
       - name: Run dbt
-        # We're already in the repo root (LTV-Sentil)
-        # Just navigate to the ltv_sentinel_dbt subfolder
-        working-directory: /ltv_sentinel_dbt
+        working-directory: ltv_sentinel_dbt
         env:
           DBT_GOOGLE_KEYFILE: ../key/service_account.json
         run: |
