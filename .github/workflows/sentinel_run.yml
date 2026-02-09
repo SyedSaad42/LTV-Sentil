@@ -23,7 +23,7 @@ jobs:
       - name: Run Ingestion Script
         working-directory: ${{ github.workspace }}  
         env:
-          GCP_SA_KEY: ${{ github.workspace }}/key/service_account.json
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/key/service_account.json
         run: |
           pip install pandas google-cloud-bigquery stripe
           python ${{ github.workspace }}/ingest_raw_script.py
