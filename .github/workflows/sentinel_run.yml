@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: pip install dbt-bigquery
 
-     - name: Create GCP service account key file
+      - name: Create GCP service account key file
         run: |
           # Create the key folder in the root of the workspace
           mkdir -p ${{ github.workspace }}/key
