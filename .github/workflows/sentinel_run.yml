@@ -25,7 +25,7 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/key/service_account.json
         run: |
-          pip install pandas google-cloud-bigquery stripe
+          pip install pandas google-cloud-bigquery pyarrow
           python ${{ github.workspace }}/ingest_raw_script.py
          
   # JOB 2: Transform the data (only runs if ingest_data succeeds)
