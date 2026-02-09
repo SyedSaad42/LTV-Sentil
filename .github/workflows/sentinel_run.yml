@@ -45,6 +45,7 @@ jobs:
           EOF
 
       - name: Debug dbt setup
+        working-directory: ltv_sentinel_dbt
         run: dbt debug
 
       - name: Run dbt
