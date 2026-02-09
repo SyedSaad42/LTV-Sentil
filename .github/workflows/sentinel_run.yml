@@ -20,10 +20,11 @@ jobs:
       - name: Install dependencies
         run: pip install dbt-bigquery
 
-      - name: Create GCP service account key file
+     - name: Create GCP service account key file
         run: |
-          mkdir -p key
-          echo "${{ secrets.GCP_SA_KEY }}" > key/service_account.json
+          # Create the key folder in the root of the workspace
+          mkdir -p ${{ github.workspace }}/key
+          echo '${{ secrets.GCP_SA_KEY }}' > ${{ github.workspace }}/key/service_account.json
 
       - name: Create dbt profiles.yml
         run: |
@@ -35,7 +36,8 @@ jobs:
               dev:
                 type: bigquery
                 method: service-account
-                keyfile: /home/runner/work/${{ github.repository }}/key/service_account.json
+                # Use the workspace variable here to guarantee the path is right
+                keyfile: ${{ github.workspace }}/key/service_account.json
                 project: ltv-sentinel-project
                 dataset: ltv_sentinel_silver
                 threads: 1
